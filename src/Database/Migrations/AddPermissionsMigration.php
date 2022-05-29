@@ -10,6 +10,13 @@ class AddPermissionsMigration extends SpatiePermissionsMigration
 
     protected $guardName = 'web';
 
+    protected $tableName;
+
+    public function __construct()
+    {
+        $this->tableName = config('permission.table_names.permissions', 'permissions');
+    }
+
     /**
      * Run the migrations.
      *
@@ -20,7 +27,7 @@ class AddPermissionsMigration extends SpatiePermissionsMigration
         $now = now();
 
         foreach ($this->permissionsToAdd as $permissionName) {
-            DB::table('permissions')->insert([
+            DB::table($this->tableName)->insert([
                 'name' => $permissionName,
                 'guard_name' => $this->guardName,
                 'created_at' => $now,
@@ -39,7 +46,7 @@ class AddPermissionsMigration extends SpatiePermissionsMigration
     public function down()
     {
         foreach ($this->permissionsToAdd as $permissionName) {
-            DB::table('permissions')->where(['name' => $permissionName])->delete();
+            DB::table($this->tableName)->where(['name' => $permissionName])->delete();
         }
 
         $this->resetCache();

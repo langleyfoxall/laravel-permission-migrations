@@ -10,6 +10,13 @@ class RemovePermissionsMigration extends SpatiePermissionsMigration
 
     protected $guardName = 'web';
 
+    protected $tableName;
+
+    public function __construct()
+    {
+        $this->tableName = config('permission.table_names.permissions', 'permissions');
+    }
+
     /**
      * Run the migrations.
      *
@@ -18,7 +25,7 @@ class RemovePermissionsMigration extends SpatiePermissionsMigration
     public function up()
     {
         foreach ($this->permissionsToRemove as $permissionName) {
-            DB::table('permissions')->where(['name' => $permissionName])->delete();
+            DB::table($this->tableName)->where(['name' => $permissionName])->delete();
         }
 
         $this->resetCache();
@@ -34,7 +41,7 @@ class RemovePermissionsMigration extends SpatiePermissionsMigration
         $now = now();
 
         foreach ($this->permissionsToRemove as $permissionName) {
-            DB::table('permissions')->insert([
+            DB::table($this->tableName)->insert([
                 'name' => $permissionName,
                 'guard_name' => $this->guardName,
                 'created_at' => $now,

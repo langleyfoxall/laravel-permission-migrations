@@ -18,6 +18,13 @@ class RemoveRolesMigration extends SpatiePermissionsMigration
      */
     protected $guardName = 'web';
 
+    protected $tableName;
+
+    public function __construct()
+    {
+        $this->tableName = config('permission.table_names.roles', 'roles');
+    }
+
     /**
      * Run the migrations.
      *
@@ -26,7 +33,7 @@ class RemoveRolesMigration extends SpatiePermissionsMigration
     public function up()
     {
         foreach ($this->rolesToRemove as $role) {
-            DB::table('roles')->where(['name' => $role])->delete();
+            DB::table($this->tableName)->where(['name' => $role])->delete();
         }
 
         $this->resetCache();
@@ -42,7 +49,7 @@ class RemoveRolesMigration extends SpatiePermissionsMigration
         $now = now();
 
         foreach ($this->rolesToRemove as $role) {
-            DB::table('roles')->insert([
+            DB::table($this->tableName)->insert([
                 'name' => $role,
                 'guard_name' => $this->guardName,
                 'created_at' => $now,

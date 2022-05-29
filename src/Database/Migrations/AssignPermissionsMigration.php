@@ -8,6 +8,19 @@ class AssignPermissionsMigration extends SpatiePermissionsMigration
 {
     protected $rolePermissions = [];
 
+    protected $tableName;
+
+    protected $rolesTableName;
+
+    protected $permissionsTableName;
+
+    public function __construct()
+    {
+        $this->tableName = config('permission.table_names.role_has_permissions', 'role_has_permissions');
+        $this->rolesTableName = config('permission.table_names.roles', 'roles');
+        $this->permissionsTableName = config('permission.table_names.permissions', 'permissions');
+    }
+
     /**
      * Run the migrations.
      *
@@ -17,7 +30,7 @@ class AssignPermissionsMigration extends SpatiePermissionsMigration
     {
         foreach ($this->rolePermissions as $roleName => $permissions) {
             foreach ($permissions as $permissionName) {
-                DB::table('role_has_permissions')->insert([
+                DB::table($this->tableName)->insert([
                     'permission_id' => $this->getPermissionIdFromName($permissionName),
                     'role_id' => $this->getRoleIdFromName($roleName),
                 ]);
@@ -36,7 +49,7 @@ class AssignPermissionsMigration extends SpatiePermissionsMigration
     {
         foreach ($this->rolePermissions as $roleName => $permissions) {
             foreach ($permissions as $permissionName) {
-                DB::table('role_has_permissions')->where([
+                DB::table($this->tableName)->where([
                     'permission_id' => $this->getPermissionIdFromName($permissionName),
                     'role_id' => $this->getRoleIdFromName($roleName),
                 ])->delete();
@@ -54,7 +67,9 @@ class AssignPermissionsMigration extends SpatiePermissionsMigration
      */
     private function getRoleIdFromName($name): int
     {
-        $role = DB::table('roles')->where('name', $name)->first();
+        $role = DB::table($this->rolesTableName)
+            ->where('name', $name)
+            ->first();
 
         return $role->id;
     }
@@ -67,7 +82,9 @@ class AssignPermissionsMigration extends SpatiePermissionsMigration
      */
     private function getPermissionIdFromName($name): int
     {
-        $permission = DB::table('permissions')->where(['name' => $name])->first();
+        $permission = DB::table($this->permissionsTableName)
+            ->where(['name' => $name])
+            ->first();
 
         return $permission->id;
     }
