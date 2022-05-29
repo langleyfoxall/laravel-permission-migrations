@@ -4,9 +4,9 @@ namespace LangleyFoxall\LaravelPermissionMigrations\Database\Migrations;
 
 use Illuminate\Support\Facades\DB;
 
-class AddRolesMigration extends SpatiePermissionsMigration
+class AddPermissionsMigration extends SpatiePermissionsMigration
 {
-    protected $rolesToAdd = [];
+    protected $permissionsToAdd = [];
 
     protected $guardName = 'web';
 
@@ -19,9 +19,9 @@ class AddRolesMigration extends SpatiePermissionsMigration
     {
         $now = now();
 
-        foreach ($this->rolesToAdd as $role) {
-            DB::table('roles')->insert([
-                'name' => $role,
+        foreach ($this->permissionsToAdd as $permissionName) {
+            DB::table('permissions')->insert([
+                'name' => $permissionName,
                 'guard_name' => $this->guardName,
                 'created_at' => $now,
                 'updated_at' => $now,
@@ -38,8 +38,8 @@ class AddRolesMigration extends SpatiePermissionsMigration
      */
     public function down()
     {
-        foreach ($this->rolesToAdd as $role) {
-            DB::table('roles')->where(['name' => $role])->delete();
+        foreach ($this->permissionsToAdd as $permissionName) {
+            DB::table('permissions')->where(['name' => $permissionName])->delete();
         }
 
         $this->resetCache();
