@@ -1,0 +1,23 @@
+{
+    "name": "langleyfoxall/laravel-permission-migrations",
+    "description": "A simple package providing migration classes to manage permissions from Spatie's laravel-permission package",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tom Lynch",
+            "email": "tom@lnch.co.uk"
+        }
+    ],
+    "require": {
+        "spatie/laravel-permission": "^5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "LangleyFoxall\\LaravelPermissionMigrations\\": "src"
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^7.5"
+    }
+}
